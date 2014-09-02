@@ -8,6 +8,11 @@ static NSString * const ServiceType = @"mlw-prisoner";
 
 @property (readwrite, nonatomic, strong) MCSession *session;
 @property (readwrite, nonatomic, strong) MCAdvertiserAssistant *assistant;
+
+@property (weak, nonatomic) IBOutlet UILabel *roundLabel;
+@property (weak, nonatomic) IBOutlet UILabel *yourScoreLabel;
+@property (weak, nonatomic) IBOutlet UILabel *theirScoreLabel;
+
 @end
 
 @implementation ViewController
@@ -33,6 +38,13 @@ static NSString * const ServiceType = @"mlw-prisoner";
         browser.delegate = self;
         [self presentViewController:browser animated:YES completion:nil];
     }
+}
+
+#pragma mark - Events
+- (IBAction)didTapCooperateButton:(id)sender {
+}
+
+- (IBAction)didTapDefectButton:(id)sender {
 }
 
 #pragma mark - MCBrowserViewControllerDelegate
