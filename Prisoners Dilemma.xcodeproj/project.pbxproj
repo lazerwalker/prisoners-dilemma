@@ -12,18 +12,7 @@
 		A60080E119B41E570075E4A5 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A60080E019B41E570075E4A5 /* ViewController.m */; };
 		A60080E419B41E570075E4A5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A60080E219B41E570075E4A5 /* Main.storyboard */; };
 		A60080E619B41E570075E4A5 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A60080E519B41E570075E4A5 /* Images.xcassets */; };
-		A60080F219B41E570075E4A5 /* Prisoners_DilemmaTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A60080F119B41E570075E4A5 /* Prisoners_DilemmaTests.m */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		A60080EC19B41E570075E4A5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A60080CD19B41E570075E4A5 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = A60080D419B41E570075E4A5;
-			remoteInfo = "Prisoners Dilemma";
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		A60080D519B41E570075E4A5 /* Prisoners Dilemma.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Prisoners Dilemma.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -35,20 +24,10 @@
 		A60080E019B41E570075E4A5 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		A60080E319B41E570075E4A5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		A60080E519B41E570075E4A5 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		A60080EB19B41E570075E4A5 /* Prisoners DilemmaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Prisoners DilemmaTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A60080F019B41E570075E4A5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A60080F119B41E570075E4A5 /* Prisoners_DilemmaTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Prisoners_DilemmaTests.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		A60080D219B41E570075E4A5 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A60080E819B41E570075E4A5 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -62,7 +41,6 @@
 			isa = PBXGroup;
 			children = (
 				A60080D719B41E570075E4A5 /* Prisoners Dilemma */,
-				A60080EE19B41E570075E4A5 /* Prisoners DilemmaTests */,
 				A60080D619B41E570075E4A5 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -71,7 +49,6 @@
 			isa = PBXGroup;
 			children = (
 				A60080D519B41E570075E4A5 /* Prisoners Dilemma.app */,
-				A60080EB19B41E570075E4A5 /* Prisoners DilemmaTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -99,23 +76,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		A60080EE19B41E570075E4A5 /* Prisoners DilemmaTests */ = {
-			isa = PBXGroup;
-			children = (
-				A60080F119B41E570075E4A5 /* Prisoners_DilemmaTests.m */,
-				A60080EF19B41E570075E4A5 /* Supporting Files */,
-			);
-			path = "Prisoners DilemmaTests";
-			sourceTree = "<group>";
-		};
-		A60080EF19B41E570075E4A5 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				A60080F019B41E570075E4A5 /* Info.plist */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -136,24 +96,6 @@
 			productReference = A60080D519B41E570075E4A5 /* Prisoners Dilemma.app */;
 			productType = "com.apple.product-type.application";
 		};
-		A60080EA19B41E570075E4A5 /* Prisoners DilemmaTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = A60080F819B41E570075E4A5 /* Build configuration list for PBXNativeTarget "Prisoners DilemmaTests" */;
-			buildPhases = (
-				A60080E719B41E570075E4A5 /* Sources */,
-				A60080E819B41E570075E4A5 /* Frameworks */,
-				A60080E919B41E570075E4A5 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				A60080ED19B41E570075E4A5 /* PBXTargetDependency */,
-			);
-			name = "Prisoners DilemmaTests";
-			productName = "Prisoners DilemmaTests";
-			productReference = A60080EB19B41E570075E4A5 /* Prisoners DilemmaTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -165,10 +107,6 @@
 				TargetAttributes = {
 					A60080D419B41E570075E4A5 = {
 						CreatedOnToolsVersion = 6.0;
-					};
-					A60080EA19B41E570075E4A5 = {
-						CreatedOnToolsVersion = 6.0;
-						TestTargetID = A60080D419B41E570075E4A5;
 					};
 				};
 			};
@@ -186,7 +124,6 @@
 			projectRoot = "";
 			targets = (
 				A60080D419B41E570075E4A5 /* Prisoners Dilemma */,
-				A60080EA19B41E570075E4A5 /* Prisoners DilemmaTests */,
 			);
 		};
 /* End PBXProject section */
@@ -198,13 +135,6 @@
 			files = (
 				A60080E419B41E570075E4A5 /* Main.storyboard in Resources */,
 				A60080E619B41E570075E4A5 /* Images.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A60080E919B41E570075E4A5 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -221,23 +151,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A60080E719B41E570075E4A5 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A60080F219B41E570075E4A5 /* Prisoners_DilemmaTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		A60080ED19B41E570075E4A5 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = A60080D419B41E570075E4A5 /* Prisoners Dilemma */;
-			targetProxy = A60080EC19B41E570075E4A5 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		A60080E219B41E570075E4A5 /* Main.storyboard */ = {
@@ -351,40 +265,6 @@
 			};
 			name = Release;
 		};
-		A60080F919B41E570075E4A5 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "Prisoners DilemmaTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Prisoners Dilemma.app/Prisoners Dilemma";
-			};
-			name = Debug;
-		};
-		A60080FA19B41E570075E4A5 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "Prisoners DilemmaTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Prisoners Dilemma.app/Prisoners Dilemma";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -404,14 +284,7 @@
 				A60080F719B41E570075E4A5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-		};
-		A60080F819B41E570075E4A5 /* Build configuration list for PBXNativeTarget "Prisoners DilemmaTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				A60080F919B41E570075E4A5 /* Debug */,
-				A60080FA19B41E570075E4A5 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
