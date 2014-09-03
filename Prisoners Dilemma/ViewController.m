@@ -127,12 +127,7 @@ typedef NS_ENUM(NSInteger, Choice) {
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 
-    if (self.session.connectedPeers.count == 0) {
-        MCBrowserViewController *browser = [[MCBrowserViewController alloc] initWithServiceType:ServiceType
-                                                                                        session:self.session];
-        browser.delegate = self;
-        [self presentViewController:browser animated:YES completion:nil];
-    }
+    [self showBrowserIfAppropriate];
 }
 
 #pragma mark -
@@ -149,6 +144,15 @@ typedef NS_ENUM(NSInteger, Choice) {
                    toPeers:self.session.connectedPeers
                   withMode:MCSessionSendDataReliable
                      error:&error];
+}
+
+- (void)showBrowserIfAppropriate {
+    if (self.session.connectedPeers.count == 0) {
+        MCBrowserViewController *browser = [[MCBrowserViewController alloc] initWithServiceType:ServiceType
+                                                                                        session:self.session];
+        browser.delegate = self;
+        [self presentViewController:browser animated:YES completion:nil];
+    }
 }
 
 #pragma mark - Events
@@ -175,6 +179,8 @@ typedef NS_ENUM(NSInteger, Choice) {
 - (void)session:(MCSession *)session peer:(MCPeerID *)peerID didChangeState:(MCSessionState)state {
     if (state == MCSessionStateConnected) {
         [self dismissViewControllerAnimated:YES completion:nil];
+    } else if (state == MCSessionStateNotConnected) {
+        [self showBrowserIfAppropriate];
     }
 }
 
