@@ -50,8 +50,7 @@ typedef NS_ENUM(NSInteger, Choice) {
     [self.assistant start];
 
     self.waitingAlertView = [[UIAlertView alloc] init];
-    self.waitingAlertView.title = @"Waiting";
-    self.waitingAlertView.message = @"Waiting for the other player to make a choice.";
+    self.waitingAlertView.message = @"Waiting for the other player to make their choice...";
 
     // Game state
     RACSignal *youMoved = [[RACObserve(self, yourLatestChoice)
@@ -63,13 +62,16 @@ typedef NS_ENUM(NSInteger, Choice) {
             }
 
             NSData *data = [NSData dataWithBytes:&round length:sizeof(round)];
-
             NSError *error;
 
             [self.session sendData:data
                            toPeers:self.session.connectedPeers
                           withMode:MCSessionSendDataReliable
                              error:&error];
+
+            if (self.theirLatestChoice == ChoiceNotMade) {
+                [self.waitingAlertView show];
+            }
         }];
 
     RACSignal *theyMoved = [RACObserve(self, theirLatestChoice)
