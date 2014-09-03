@@ -56,18 +56,7 @@ typedef NS_ENUM(NSInteger, Choice) {
     RACSignal *youMoved = [[RACObserve(self, yourLatestChoice)
         ignore:@(ChoiceNotMade)]
         doNext:^(NSNumber *choiceNum) {
-            NSInteger round = self.roundNumber;
-            if (choiceNum.intValue == ChoiceDefect) {
-                round *= -1;
-            }
-
-            NSData *data = [NSData dataWithBytes:&round length:sizeof(round)];
-            NSError *error;
-
-            [self.session sendData:data
-                           toPeers:self.session.connectedPeers
-                          withMode:MCSessionSendDataReliable
-                             error:&error];
+            [self sendLatestMove];
 
             if (self.theirLatestChoice == ChoiceNotMade) {
                 [self.waitingAlertView show];
@@ -144,6 +133,22 @@ typedef NS_ENUM(NSInteger, Choice) {
         browser.delegate = self;
         [self presentViewController:browser animated:YES completion:nil];
     }
+}
+
+#pragma mark -
+- (void)sendLatestMove {
+    NSInteger round = self.roundNumber;
+    if (self.yourLatestChoice == ChoiceDefect) {
+        round *= -1;
+    }
+
+    NSData *data = [NSData dataWithBytes:&round length:sizeof(round)];
+    NSError *error;
+
+    [self.session sendData:data
+                   toPeers:self.session.connectedPeers
+                  withMode:MCSessionSendDataReliable
+                     error:&error];
 }
 
 #pragma mark - Events
