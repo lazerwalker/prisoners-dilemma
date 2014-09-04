@@ -34,20 +34,20 @@ typedef NS_ENUM(NSInteger, Choice) {
 @implementation ViewController
 
 - (void)viewDidLoad {
+    // Initialize game state
     self.roundNumber = 1;
     self.yourLatestChoice = ChoiceNotMade;
     self.theirLatestChoice = ChoiceNotMade;
 
+    // Start advertising device
     UIDevice *device = [UIDevice currentDevice];
     MCPeerID *peer = [[MCPeerID alloc] initWithDisplayName:device.name];
     self.session = [[MCSession alloc] initWithPeer:peer];
     self.session.delegate = self;
-
     self.assistant = [[MCAdvertiserAssistant alloc] initWithServiceType:ServiceType
                                                           discoveryInfo:nil
                                                                 session:self.session];
     self.assistant.delegate = self;
-    [self.assistant start];
 
     self.waitingAlertView = [[UIAlertView alloc] init];
     self.waitingAlertView.message = @"Waiting for the other player to make their choice...";
@@ -127,7 +127,7 @@ typedef NS_ENUM(NSInteger, Choice) {
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 
-    [self showBrowserIfAppropriate];
+    [self startMatchmaking];
 }
 
 #pragma mark -
@@ -146,8 +146,10 @@ typedef NS_ENUM(NSInteger, Choice) {
                      error:&error];
 }
 
-- (void)showBrowserIfAppropriate {
+- (void)startMatchmaking {
     if (self.session.connectedPeers.count == 0) {
+        [self.assistant start];
+
         MCBrowserViewController *browser = [[MCBrowserViewController alloc] initWithServiceType:ServiceType
                                                                                         session:self.session];
         browser.delegate = self;
@@ -155,6 +157,10 @@ typedef NS_ENUM(NSInteger, Choice) {
     }
 }
 
+- (void)stopMatchmaking {
+    [self.assistant stop];
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
 #pragma mark - Events
 - (IBAction)didTapCooperateButton:(id)sender {
     self.yourLatestChoice = ChoiceCooperate;
@@ -167,20 +173,20 @@ typedef NS_ENUM(NSInteger, Choice) {
 #pragma mark - MCBrowserViewControllerDelegate
 
 - (void)browserViewControllerDidFinish:(MCBrowserViewController *)browserViewController {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self stopMatchmaking];
 }
 
 - (void)browserViewControllerWasCancelled:(MCBrowserViewController *)browserViewController {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self stopMatchmaking];
 }
 
 #pragma mark - MCSessionDelegate
 
 - (void)session:(MCSession *)session peer:(MCPeerID *)peerID didChangeState:(MCSessionState)state {
     if (state == MCSessionStateConnected) {
-        [self dismissViewControllerAnimated:YES completion:nil];
+        [self stopMatchmaking];
     } else if (state == MCSessionStateNotConnected) {
-        [self showBrowserIfAppropriate];
+        [self startMatchmaking];
     }
 }
 
