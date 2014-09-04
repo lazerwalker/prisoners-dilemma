@@ -36,7 +36,6 @@ typedef NS_ENUM(NSInteger, Choice) {
 - (void)viewDidLoad {
     [self startNextRound];
 
-    // Start advertising device
     UIDevice *device = [UIDevice currentDevice];
     MCPeerID *peer = [[MCPeerID alloc] initWithDisplayName:device.name];
     self.session = [[MCSession alloc] initWithPeer:peer];
