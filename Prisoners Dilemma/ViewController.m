@@ -34,10 +34,7 @@ typedef NS_ENUM(NSInteger, Choice) {
 @implementation ViewController
 
 - (void)viewDidLoad {
-    // Initialize game state
-    self.roundNumber = 1;
-    self.yourLatestChoice = ChoiceNotMade;
-    self.theirLatestChoice = ChoiceNotMade;
+    [self startNextRound];
 
     // Start advertising device
     UIDevice *device = [UIDevice currentDevice];
@@ -49,8 +46,22 @@ typedef NS_ENUM(NSInteger, Choice) {
                                                                 session:self.session];
     self.assistant.delegate = self;
 
+
+    // UI
     self.waitingAlertView = [[UIAlertView alloc] init];
     self.waitingAlertView.message = @"Waiting for the other player to make their choice...";
+
+    RAC(self, roundLabel.text) = [RACObserve(self, roundNumber) map:^id(NSNumber *number) {
+        return [NSString stringWithFormat:@"Round %@", number];
+    }];
+
+    RAC(self, yourScoreLabel.text) = [RACObserve(self, yourScore) map:^id(NSNumber *number) {
+        return number.stringValue;
+    }];
+
+    RAC(self, theirScoreLabel.text) = [RACObserve(self, theirScore) map:^id(NSNumber *number) {
+        return number.stringValue;
+    }];
 
     // Game state
     RACSignal *youMoved = [[RACObserve(self, yourLatestChoice)
@@ -68,59 +79,12 @@ typedef NS_ENUM(NSInteger, Choice) {
 
     [[youMoved zipWith:theyMoved] subscribeNext:^(RACTuple *result) {
         dispatch_async(dispatch_get_main_queue(), ^{
-
             [self.waitingAlertView dismissWithClickedButtonIndex:0 animated:NO];
-
-            Choice you = [result.first intValue];
-            Choice they = [result.last intValue];
-
-            if (you == ChoiceCooperate) {
-                if (they == ChoiceCooperate) {
-                    self.yourScore += 2;
-                    self.theirScore += 2;
-                } else {
-                    self.yourScore -= 1;
-                    self.theirScore += 3;
-                }
-            } else {
-                if (they == ChoiceCooperate) {
-                    self.yourScore += 3;
-                    self.theirScore -= 1;
-                } else {
-                    // Nothing happens
-                }
-            }
-
-            NSDictionary *mapping = @{
-                @(ChoiceCooperate) : @"cooperate",
-                @(ChoiceDefect) : @"defect"
-            };
-
-            UIAlertView *resultsAlert = [[UIAlertView alloc] init];
-            resultsAlert.title = @"Round Over";
-            resultsAlert.message = [NSString stringWithFormat:@"You chose to %@. The other player chose to %@.",
-                                    mapping[@(you)], mapping[@(they)]];
-            [resultsAlert addButtonWithTitle:@"OK"];
-            [resultsAlert show];
-
-            self.yourLatestChoice = ChoiceNotMade;
-            self.theirLatestChoice = ChoiceNotMade;
-            self.roundNumber++;
-
         });
-    }];
 
-    // UI
-    RAC(self, roundLabel.text) = [RACObserve(self, roundNumber) map:^id(NSNumber *number) {
-        return [NSString stringWithFormat:@"Round %@", number];
-    }];
-
-    RAC(self, yourScoreLabel.text) = [RACObserve(self, yourScore) map:^id(NSNumber *number) {
-        return number.stringValue;
-    }];
-
-    RAC(self, theirScoreLabel.text) = [RACObserve(self, theirScore) map:^id(NSNumber *number) {
-        return number.stringValue;
+        [self updateScore:result];
+        [self showResults:result];
+        [self startNextRound];
     }];
 }
 
@@ -130,7 +94,54 @@ typedef NS_ENUM(NSInteger, Choice) {
     [self startMatchmaking];
 }
 
-#pragma mark -
+#pragma mark - game logic
+- (void)updateScore:(RACTuple *)tuple {
+    Choice you = [tuple.first integerValue];
+    Choice they = [tuple.second integerValue];
+    if (you == ChoiceCooperate) {
+        if (they == ChoiceCooperate) {
+            self.yourScore += 2;
+            self.theirScore += 2;
+        } else {
+            self.yourScore -= 1;
+            self.theirScore += 3;
+        }
+    } else {
+        if (they == ChoiceCooperate) {
+            self.yourScore += 3;
+            self.theirScore -= 1;
+        } else {
+            // Nothing happens
+        }
+    }
+}
+
+- (void)showResults:(RACTuple *)result {
+    NSDictionary *mapping = @{
+      @(ChoiceCooperate) : @"cooperate",
+      @(ChoiceDefect) : @"defect"
+    };
+
+    NSString *you = mapping[result.first];
+    NSString *they = mapping[result.second];
+
+    UIAlertView *resultsAlert = [[UIAlertView alloc] init];
+    resultsAlert.title = @"Round Over";
+    resultsAlert.message = [NSString stringWithFormat:@"You chose to %@. The other player chose to %@.", you, they];
+    [resultsAlert addButtonWithTitle:@"OK"];
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [resultsAlert show];
+    });
+}
+
+- (void)startNextRound {
+    self.yourLatestChoice = ChoiceNotMade;
+    self.theirLatestChoice = ChoiceNotMade;
+    self.roundNumber++;
+}
+
+#pragma mark - Networking
 - (void)sendLatestMove {
     NSInteger round = self.roundNumber;
     if (self.yourLatestChoice == ChoiceDefect) {
