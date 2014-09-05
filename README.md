@@ -2,7 +2,7 @@
 
 This is a very simple iterated [prisoner's dilemma](https://en.wikipedia.org/wiki/Prisoner%27s_dilemma) game for two players, each playing on their own iOS device.
 
-It is meant to demonstrate how to use Apple's Multipeer Connectivity framework, and accompanies [this blog post]().
+It is meant to demonstrate how to use Apple's Multipeer Connectivity framework, and accompanies [this blog post](http://blog.lazerwalker.com/blog/2014/09/03/making-multiplayer-ios-games-with-apple-multipeer-connectivity/).
 
 ## Try it out!
 
