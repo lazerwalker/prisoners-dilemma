@@ -1,3 +1,4 @@
+@import WebRTC;
 @import MultipeerConnectivity;
 #import <ReactiveCocoa/ReactiveCocoa.h>
 
