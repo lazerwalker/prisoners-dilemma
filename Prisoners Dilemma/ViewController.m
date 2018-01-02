@@ -1,6 +1,8 @@
-@import WebRTC;
 @import MultipeerConnectivity;
 #import <ReactiveCocoa/ReactiveCocoa.h>
+#import "JFRWebsocket.h"
+#import <CocoaHTTPServer/HTTPServer.h>
+#import <CocoaHTTPServer/WebSocket.h>
 
 #import "ViewController.h"
 
@@ -12,7 +14,7 @@ typedef NS_ENUM(NSInteger, Choice) {
     ChoiceDefect
 };
 
-@interface ViewController ()<MCBrowserViewControllerDelegate, MCAdvertiserAssistantDelegate, MCSessionDelegate>
+@interface ViewController ()<MCBrowserViewControllerDelegate, MCAdvertiserAssistantDelegate, MCSessionDelegate, WebSocketDelegate, JFRWebSocketDelegate>
 
 @property (readwrite, nonatomic, assign) NSInteger roundNumber;
 @property (readwrite, nonatomic, assign) NSInteger yourScore;
@@ -30,6 +32,10 @@ typedef NS_ENUM(NSInteger, Choice) {
 
 @property (readwrite, nonatomic, strong) UIAlertView *waitingAlertView;
 
+@property (nonatomic, strong) HTTPServer *server;
+@property (nonatomic, strong) WebSocket *webSocket;
+@property (nonatomic, strong) JFRWebSocket *socketClient;
+
 @end
 
 @implementation ViewController
@@ -37,7 +43,9 @@ typedef NS_ENUM(NSInteger, Choice) {
 - (void)viewDidLoad {
     [self startNextRound];
 
-    UIDevice *device = [UIDevice currentDevice];
+
+    /*
+     UIDevice *device = [UIDevice currentDevice];
     MCPeerID *peer = [[MCPeerID alloc] initWithDisplayName:device.name];
     self.session = [[MCSession alloc] initWithPeer:peer];
     self.session.delegate = self;
@@ -46,6 +54,21 @@ typedef NS_ENUM(NSInteger, Choice) {
                                                                 session:self.session];
     self.assistant.delegate = self;
 
+     */
+
+    self.server = [[HTTPServer alloc] init];
+    [self.server setType:@"_http._tcp."];
+    [self.server setPort:12345];
+
+    self.webSocket = [[WebSocket alloc] init];
+    [self.server addWebSocket:self.webSocket];
+    self.webSocket.delegate = self;
+
+    NSError *error;
+    if(![self.server start:&error])
+    {
+        NSLog(@"Error starting HTTP Server: %@", error);
+    }
 
     // UI
     self.waitingAlertView = [[UIAlertView alloc] init];
@@ -158,14 +181,32 @@ typedef NS_ENUM(NSInteger, Choice) {
 }
 
 - (void)startMatchmaking {
-    if (self.session.connectedPeers.count == 0) {
-        [self.assistant start];
+//    if (self.session.connectedPeers.count == 0) {
+//        [self.assistant start];
+//
+//        MCBrowserViewController *browser = [[MCBrowserViewController alloc] initWithServiceType:ServiceType
+//                                                                                        session:self.session];
+//        browser.delegate = self;
+//        [self presentViewController:browser animated:YES completion:nil];
+//    }
 
-        MCBrowserViewController *browser = [[MCBrowserViewController alloc] initWithServiceType:ServiceType
-                                                                                        session:self.session];
-        browser.delegate = self;
-        [self presentViewController:browser animated:YES completion:nil];
-    }
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Host or Join?" message:@"Pick if you want to host a game or join a game" preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction: [UIAlertAction actionWithTitle:@"Host" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+
+    }]];
+
+    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.placeholder = @"0.0.0.0:12345";
+    }];
+
+    [alert addAction: [UIAlertAction actionWithTitle:@"Join" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        NSString *ip = [NSString stringWithFormat:@"ws://%@", alert.textFields.firstObject.text];
+        self.socketClient = [[JFRWebSocket alloc] initWithURL:[NSURL URLWithString:ip] protocols:@[@"prisoner"]];
+        self.socketClient.delegate = self;
+        [self.socketClient connect];
+    }]];
+
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)stopMatchmaking {
@@ -216,4 +257,40 @@ typedef NS_ENUM(NSInteger, Choice) {
 - (void)session:(MCSession *)session didStartReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID withProgress:(NSProgress *)progress {}
 
 - (void)session:(MCSession *)session didFinishReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID atURL:(NSURL *)localURL withError:(NSError *)error {}
+
+#pragma mark - WebSocketDelegate
+- (void)webSocketDidOpen:(WebSocket *)ws {
+
+}
+
+- (void)webSocket:(WebSocket *)ws didReceiveMessage:(NSString *)msg {
+    NSInteger round = [msg integerValue];
+    if (ABS(round) != self.roundNumber) return;
+
+    self.theirLatestChoice = (round > 0 ? ChoiceCooperate : ChoiceDefect);
+}
+
+- (void)webSocketDidClose:(WebSocket *)ws {
+
+}
+
+#pragma mark - JFRWebSocketDelegate
+-(void)websocketDidConnect:(JFRWebSocket*)socket {
+
+}
+
+-(void)websocketDidDisconnect:(JFRWebSocket*)socket error:(NSError*)error {
+
+}
+
+-(void)websocket:(JFRWebSocket*)socket didReceiveMessage:(NSString*)msg {
+    NSInteger round = [msg integerValue];
+    if (ABS(round) != self.roundNumber) return;
+
+    self.theirLatestChoice = (round > 0 ? ChoiceCooperate : ChoiceDefect);
+}
+
+-(void)websocket:(JFRWebSocket*)socket didReceiveData:(NSData*)data {
+}
+
 @end
