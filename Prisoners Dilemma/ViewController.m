@@ -4,6 +4,7 @@
 #import <CocoaHTTPServer/HTTPServer.h>
 #import <CocoaHTTPServer/WebSocket.h>
 
+#import "WebSocketServer.h"
 #import "ViewController.h"
 
 static NSString * const ServiceType = @"mlw-prisoner";
@@ -33,7 +34,7 @@ typedef NS_ENUM(NSInteger, Choice) {
 @property (readwrite, nonatomic, strong) UIAlertView *waitingAlertView;
 
 @property (nonatomic, strong) HTTPServer *server;
-@property (nonatomic, strong) WebSocket *webSocket;
+@property (nonatomic, strong) WebSocketServer *webSocket;
 @property (nonatomic, strong) JFRWebSocket *socketClient;
 
 @end
@@ -56,19 +57,6 @@ typedef NS_ENUM(NSInteger, Choice) {
 
      */
 
-    self.server = [[HTTPServer alloc] init];
-    [self.server setType:@"_http._tcp."];
-    [self.server setPort:12345];
-
-    self.webSocket = [[WebSocket alloc] init];
-    [self.server addWebSocket:self.webSocket];
-    self.webSocket.delegate = self;
-
-    NSError *error;
-    if(![self.server start:&error])
-    {
-        NSLog(@"Error starting HTTP Server: %@", error);
-    }
 
     // UI
     self.waitingAlertView = [[UIAlertView alloc] init];
@@ -174,10 +162,20 @@ typedef NS_ENUM(NSInteger, Choice) {
     NSData *data = [NSData dataWithBytes:&round length:sizeof(round)];
     NSError *error;
 
-    [self.session sendData:data
-                   toPeers:self.session.connectedPeers
-                  withMode:MCSessionSendDataReliable
-                     error:&error];
+    if (self.session) {
+        [self.session sendData:data
+                       toPeers:self.session.connectedPeers
+                      withMode:MCSessionSendDataReliable
+                         error:&error];
+    }
+
+    if (self.webSocket) {
+        [self.webSocket sendMessage:@(round).stringValue];
+    }
+
+    if (self.socketClient) {
+        [self.socketClient writeString:@(round).stringValue];
+    }
 }
 
 - (void)startMatchmaking {
@@ -192,7 +190,19 @@ typedef NS_ENUM(NSInteger, Choice) {
 
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Host or Join?" message:@"Pick if you want to host a game or join a game" preferredStyle:UIAlertControllerStyleAlert];
     [alert addAction: [UIAlertAction actionWithTitle:@"Host" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        self.server = [[HTTPServer alloc] init];
+        [self.server setType:@"_http._tcp."];
+        [self.server setPort:12345];
 
+        self.webSocket = [[WebSocketServer alloc] init];
+        [self.server addWebSocket:self.webSocket];
+        self.webSocket.socketDelegate = self;
+
+        NSError *error;
+        if(![self.server start:&error])
+        {
+            NSLog(@"Error starting HTTP Server: %@", error);
+        }
     }]];
 
     [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
@@ -201,7 +211,7 @@ typedef NS_ENUM(NSInteger, Choice) {
 
     [alert addAction: [UIAlertAction actionWithTitle:@"Join" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         NSString *ip = [NSString stringWithFormat:@"ws://%@", alert.textFields.firstObject.text];
-        self.socketClient = [[JFRWebSocket alloc] initWithURL:[NSURL URLWithString:ip] protocols:@[@"prisoner"]];
+        self.socketClient = [[JFRWebSocket alloc] initWithURL:[NSURL URLWithString:ip] protocols:nil	];
         self.socketClient.delegate = self;
         [self.socketClient connect];
     }]];
@@ -260,7 +270,7 @@ typedef NS_ENUM(NSInteger, Choice) {
 
 #pragma mark - WebSocketDelegate
 - (void)webSocketDidOpen:(WebSocket *)ws {
-
+    NSLog(@"Server opened");
 }
 
 - (void)webSocket:(WebSocket *)ws didReceiveMessage:(NSString *)msg {
@@ -271,16 +281,17 @@ typedef NS_ENUM(NSInteger, Choice) {
 }
 
 - (void)webSocketDidClose:(WebSocket *)ws {
-
+    NSLog(@"Server closed");
 }
 
 #pragma mark - JFRWebSocketDelegate
 -(void)websocketDidConnect:(JFRWebSocket*)socket {
+    NSLog(@"Connected");
 
 }
 
 -(void)websocketDidDisconnect:(JFRWebSocket*)socket error:(NSError*)error {
-
+    NSLog(@"Disconnected");
 }
 
 -(void)websocket:(JFRWebSocket*)socket didReceiveMessage:(NSString*)msg {
@@ -291,6 +302,7 @@ typedef NS_ENUM(NSInteger, Choice) {
 }
 
 -(void)websocket:(JFRWebSocket*)socket didReceiveData:(NSData*)data {
+
 }
 
 @end

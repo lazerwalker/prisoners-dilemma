@@ -13,6 +13,7 @@
 		A60080E119B41E570075E4A5 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A60080E019B41E570075E4A5 /* ViewController.m */; };
 		A60080E419B41E570075E4A5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A60080E219B41E570075E4A5 /* Main.storyboard */; };
 		A60080E619B41E570075E4A5 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A60080E519B41E570075E4A5 /* Images.xcassets */; };
+		C631F6551FFB63DB00EF7561 /* WebSocketServer.m in Sources */ = {isa = PBXBuildFile; fileRef = C631F6541FFB63DB00EF7561 /* WebSocketServer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,8 @@
 		A60080E019B41E570075E4A5 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		A60080E319B41E570075E4A5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		A60080E519B41E570075E4A5 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		C631F6531FFB63DB00EF7561 /* WebSocketServer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WebSocketServer.h; sourceTree = "<group>"; };
+		C631F6541FFB63DB00EF7561 /* WebSocketServer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WebSocketServer.m; sourceTree = "<group>"; };
 		DD6484A31AE4F830FA650355 /* Pods-Prisoners Dilemma.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Prisoners Dilemma.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Prisoners Dilemma/Pods-Prisoners Dilemma.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -87,6 +90,8 @@
 				A60080E219B41E570075E4A5 /* Main.storyboard */,
 				A60080E519B41E570075E4A5 /* Images.xcassets */,
 				A60080D819B41E570075E4A5 /* Supporting Files */,
+				C631F6531FFB63DB00EF7561 /* WebSocketServer.h */,
+				C631F6541FFB63DB00EF7561 /* WebSocketServer.m */,
 			);
 			path = "Prisoners Dilemma";
 			sourceTree = "<group>";
@@ -229,6 +234,7 @@
 			files = (
 				A60080E119B41E570075E4A5 /* ViewController.m in Sources */,
 				A60080DE19B41E570075E4A5 /* AppDelegate.m in Sources */,
+				C631F6551FFB63DB00EF7561 /* WebSocketServer.m in Sources */,
 				A60080DB19B41E570075E4A5 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
